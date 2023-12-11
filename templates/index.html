@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}ByteTubeDive | Home{% endblock %}
+
+{% block head %}
+    
+{% endblock %}
+
+{% block header %}
+    <nav>
+
+    </nav>
+{% endblock %}
+
+{% block main %}
+<form action="/delete_all">
+    <input type="submit" value="Delete All">
+</form>
+    {% for video in videos %}
+        <div class="video">
+            <a href="{{ video.url }}">
+                <img src="{{ video.thumbnail }}" alt="Video Thumbnail">
+                <h3>{{ video.title }}</h3>
+            </a>
+        </div>
+
+    {% endfor %}
+{% endblock %}
+```
