@@ -1,0 +1,31 @@
+/* Hide the checkbox */
+#videoCheckbox {
+    display: none;
+}
+
+/* Style the label as a clickable area */
+#iconToggle {
+    cursor: pointer;
+}
+
+/* Hide all icons initially */
+#iconToggle i {
+    display: none;
+}
+
+/* Display the first icon by default */
+#iconToggle i.fa-video {
+    display: inline-block;
+}
+
+/* Display the second icon when checkbox is checked */
+#videoCheckbox:checked + #iconToggle i.fa-video-slash {
+    display: inline-block;
+}
+
+/* Hide the first icon when checkbox is checked */
+#videoCheckbox:checked + #iconToggle i.fa-video {
+    display: none;
+}
+
+

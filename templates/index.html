@@ -1,29 +1,120 @@
 {% extends "base.html" %}
 
-{% block title %}ByteTubeDive | Home{% endblock %}
+{% block title %}ByteTubeDive | Download as many YouTube videos you want!!!{% endblock %}
 
 {% block head %}
-    
-{% endblock %}
-
-{% block header %}
-    <nav>
-
-    </nav>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='index.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='checkbox.css') }}">
 {% endblock %}
 
 {% block main %}
-<form action="/delete_all">
-    <input type="submit" value="Delete All">
-</form>
-    {% for video in videos %}
-        <div class="video">
-            <a href="{{ video.url }}">
-                <img src="{{ video.thumbnail }}" alt="Video Thumbnail">
-                <h3>{{ video.title }}</h3>
-            </a>
-        </div>
+    <div class="toolbar">
+        <form action="/add" class="toolbar-left" method="post">
+            <input type="text" name="link" class="url-input" placeholder="Link of video or playlist" autocomplete="off">
+            <input type="submit" value="+" class="add-button toolbar-button link-button"
+                   title="Add video/playlist to list">
+            <button type="submit" class="download-all-button toolbar-button link-button"
+                    title="Download video/playlist directly">
+                <i class="fa-solid fa-circle-down"></i>
+            </button>
+            <input type="checkbox" id="videoCheckbox" {% if onlyAudio == "1" %}
+                   checked
+            {% endif %}>
+            <label for="videoCheckbox" id="iconToggle">
+                <i class="fa-solid fa-video"></i>
+                <i class="fa-solid fa-video-slash"></i>
+            </label>
 
-    {% endfor %}
+        </form>
+        <div class="toolbar-right">
+            <form action="/reverse_selection" method="post" title="Reverse your selection">
+                <button type="submit" class="download-all-button toolbar-button">
+                    <i class="fa-solid fa-object-group"></i>
+                </button>
+            </form>
+            <form action="/download_selected" method="post" title="Download all selected Videos">
+                <button type="submit" class="download-selected-button toolbar-button">
+                    <i class="fa-regular fa-circle-down"></i>
+                </button>
+            </form>
+            <form action="/download_all" method="post" title="Download all Videos">
+                <button type="submit" class="download-all-button toolbar-button">
+                    <i class="fa-solid fa-circle-down"></i>
+                </button>
+            </form>
+            <form action="/delete_all" method="post" title="Delete all Videos">
+                <button type="submit" class="delete-all-button toolbar-button">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="videos">
+        {% for video in videos %}
+            <div class="video">
+                <form action="/check" method="post">
+                    <input type="checkbox" class="video-checkbox" name="link"
+                           {% if video.selected %}checked{% endif %}/>
+                    <input type="text" value="{{ video.url }}" hidden="hidden" class="video-url">
+                </form>
+                <img src="{{ video.thumbnail }}" alt="Video Thumbnail" class="video-thumbnail">
+                <div class="video-title-channel">
+                    <a href="{{ video.url }}" class="video-title" target="_blank">
+                        {{ video.title }}
+                    </a>
+                    <a href="{{ video.channel_url }}" class="video-channel" target="_blank">
+                        {{ video.channel }}
+                    </a>
+                </div>
+{#                <div class="video-duration">#}
+{#                    write duration as min or hours#}
+{#                    {% if video.duration > 3600 %}#}
+{#                        {{ video.duration // 3600 }}:#}
+{#                        {% if (video.duration % 3600) // 60 < 10 %}#}
+{#                            0{{ (video.duration % 3600) // 60 }}#}
+{#                        {% else %}#}
+{#                            {{ (video.duration % 3600) // 60 }}#}
+{#                        {% endif %}#}
+{#                        :#}
+{#                        {% if video.duration % 60 < 10 %}#}
+{#                            0{{ video.duration % 60 }}#}
+{#                        {% else %}#}
+{#                            {{ video.duration % 60 }}#}
+{#                        {% endif %}#}
+{#                    {% else %}#}
+{#                        {% if video.duration // 60 < 10 %}#}
+{#                            0{{ video.duration // 60 }}#}
+{#                        {% else %}#}
+{#                            {{ video.duration // 60 }}#}
+{#                        {% endif %}#}
+{#                        :#}
+{#                        {% if video.duration % 60 < 10 %}#}
+{#                            0{{ video.duration % 60 }}#}
+{#                        {% else %}#}
+{#                            {{ video.duration % 60 }}#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
+{#                </div>#}
+            
+                <form action="/download" method="post" title="Download this Videos">
+                    <button type="submit" class="download-all-button toolbar-button">
+                        <i class="fa-solid fa-circle-down"></i>
+                    </button>
+                    <input type="text" value="{{ video.url }}" name="links" hidden="hidden" class="video-url">
+                </form>
+
+                <form action="/delete" method="post" title="Delete this video">
+                    <button type="submit" class="delete-all-button toolbar-button">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <input type="text" value="{{ video.url }}" name="links" hidden="hidden" class="video-url">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}
-```
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='check_video.js') }}"></script>
+{% endblock %}

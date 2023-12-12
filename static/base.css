@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url('https://use.fontawesome.com/releases/v6.1.2/css/all.css');
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #191e1f;
+}
+
+* {
+    font-family: 'Josefin Sans', sans-serif;
+    text-decoration: none;
+}
+
+main {
+    flex-grow: 1;
+    max-width: 100%;
+    min-height: 100%;
+    display: flex;
+    padding: 0 1rem 1rem 1rem;
+    flex-direction: column;
+    align-items: center;
+    
+}
+footer {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    flex-direction: column;
+    margin-top: 200px;
+    color: #fff;
+    background: #090d0e;
+}
+
+
+.copyright a {
+    color: #497abb;
+    font-weight: bold;
+}
+
+.copyright a:hover {
+    opacity: .7;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 19px;
+    background: #090d0e;
+}
+
+.title-byte {
+    font-size: 30px;
+    color: #497abb;
+    font-weight: bold;
+}
+
+.title-tube {
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.header-icon-github {
+    font-size: 50px;
+    color: #ffffff;
+    font-weight: bold;
+    transition: all .2s;
+}
+
+.header-icon-github:hover {
+    color: #497abb;
+}
+
+.header-icon-stop {
+    font-size: 50px;
+    color: #ffffff;
+    font-weight: bold;
+    transition: all .2s;
+}
+
+.header-icon-stop:hover {
+    color: #bb4949;
+}
+header button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+

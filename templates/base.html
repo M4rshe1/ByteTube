@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <meta charset="UTF-8">
-    {% block title %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='base.css') }}">
+    <title>{% block title %}{% endblock %}</title>
     {% block head %}{% endblock %}
 </head>
 <body>
 <Header>
-    {% block header %}{% endblock %}
+    <form action="/stop_app" method="post" title="Stop the app. This will also kill all your running downloads"
+          id="stop-form">
+        <button type="submit"><i class="fa-solid fa-power-off header-icon-stop"></i></button>
+    </form>
+    <a href="/">
+        <span class="title-byte">Byte</span>
+        <span class="title-tube">Tube</span>
+    </a>
+    <a href="https://github.com/M4rshe1/ByteTube" target="_blank">
+        <i class="fa-brands fa-square-github header-icon-github"></i>
+    </a>
 </Header>
 <main>
     {% block main %}{% endblock %}
 </main>
 <footer>
-    
+    <div class="inner-footer">
+    </div>
+    <div class="copyright">
+        <p><span id="year"></span> <a href="https://colin.heggli.dev">Colin Heggli</a></p>
+    </div>
 </footer>
+    {% block scripts %}{% endblock %}
+<script>
+    let year = new Date().getFullYear();
+    document.getElementById("year").innerHTML = String(year);
+
+    let form = document.getElementById("stop-form")
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to stop the app?")) {
+            form.submit();
+        }
+    });
+</script>
 </body>
 </html>

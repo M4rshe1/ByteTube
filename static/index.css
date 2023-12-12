@@ -1,0 +1,123 @@
+.video {
+    display: grid;
+    /*auto grid columne*/
+    grid-template-columns: 40px 100px 1fr 40px 40px 40px;
+    padding: .5rem;
+    background: #213034;
+    border-radius: 5px;
+    margin: .3rem;
+    align-items: center;
+    width: 100%;
+}
+
+.videos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.video .video-thumbnail {
+    height: 40px;
+}
+
+.video .video-checkbox {
+    height: 20px;
+    aspect-ratio: 1;
+}
+
+.audio-checkbox {
+    height: 30px;
+    aspect-ratio: 1;
+}
+
+
+.video .video-title-channel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 .5rem;
+}
+
+.video .video-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.video .video-channel {
+    font-size: 1rem;
+    color: #96a2b7;
+}
+
+.video .video-channel:hover, .video .video-title:hover {
+    cursor: pointer;
+    opacity: .7;
+    transition: all .2s;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    background: #0e1717;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.url-input {
+    border: #497abb 1px solid;
+    outline: none;
+    height: 30px;
+    width: 16rem;
+    padding: 0 .5rem;
+    border-radius: 5px;
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+.toolbar-button:hover {
+    cursor: pointer;
+    opacity: .7;
+}
+
+.download-selected-button, .download-all-button, #iconToggle {
+    background: #497abb;
+}
+
+.delete-all-button {
+    background: #bb4949;
+}
+
+.add-button {
+    background: #62bb49;
+}
+
+.toolbar-button, #iconToggle {
+    margin-left: .5rem;
+    border: none;
+    outline: none;
+    height: 30px;
+    align-items: center;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all .2s;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+}
+
+

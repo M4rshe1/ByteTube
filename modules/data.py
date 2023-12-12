@@ -32,6 +32,7 @@ def get_playlist_videos(link: str):
             "size": "Error",
             "selected": False,
             "downloaded": False,
+            "failed": False,
         }]
 
 
@@ -47,11 +48,12 @@ def video_data(link: str):
             "channel": yt.author,
             "channel_url": yt.channel_url,
             "upload_date": yt.publish_date,
-            "duration": yt.length,
+            "duration": int(yt.length),
             "thumbnail": yt.thumbnail_url,
             "size": yt.length,
-            "selected": False,
+            "selected": True,
             "downloaded": False,
+            "failed": False,
         }
     except Exception as e:
         print(e)
@@ -63,9 +65,10 @@ def video_data(link: str):
             "channel": "Error",
             "channel_url": "Error",
             "upload_date": "Error",
-            "duration": "Error",
+            "duration": 0,
             "thumbnail": "Error",
             "size": "Error",
             "selected": False,
             "downloaded": False,
+            "failed": False,
         }
