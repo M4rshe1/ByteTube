@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, Request, Form, status, BackgroundTasks
+from fastapi import FastAPI, Depends, Request, Form, status
+# BackgroundTasks
 
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -51,14 +52,23 @@ def root(request: Request, db: Session = Depends(get_db)):
 
 
 @app.post("/add")
-def add(request: Request, db: Session = Depends(get_db), link: str = Form(...)):
+async def add(request: Request, db: Session = Depends(get_db), link: str = Form(...)):
     data = modules.get_video_data(link)
     if data:
         for video in data:
             db_video = models.Videos(**video)
             db.add(db_video)
         db.commit()
-        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+# @app.post("/stop_app")
+# def stop_app(request: Request, db: Session = Depends(get_db)):
+#     global IN_PROGRESS
+#     global IS_DOWNLOADING
+#     IN_PROGRESS = False
+#     IS_DOWNLOADING = False
+#     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.post("/settings")
@@ -73,7 +83,7 @@ async def download(request: Request, db: Session = Depends(get_db), links: str =
     error = False
     links = links.split("\r\n")
     onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
-    
+
     for link in links:
         error = modules.download(link, onlyaudio.value)
         if error:
@@ -147,6 +157,14 @@ def reverse_selection(request: Request, db: Session = Depends(get_db)):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
+@app.post("/export")
+def export(request: Request, db: Session = Depends(get_db), type: str = Form(...)):
+    if modules.export.do(db, type):
+        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        return {"status": 500, "message": "Something went wrong"}
+
+
 @app.exception_handler(405)
 async def method_not_allowed(request, exc):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
@@ -155,3 +173,4 @@ async def method_not_allowed(request, exc):
 @app.exception_handler(404)
 async def not_found(request, exc):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+

@@ -1,7 +1,7 @@
 .video {
     display: grid;
     /*auto grid columne*/
-    grid-template-columns: 40px 100px 1fr 40px 40px 40px;
+    grid-template-columns: 40px 100px 1fr .3fr 70px 40px 40px;
     padding: .5rem;
     background: #213034;
     border-radius: 5px;
@@ -43,6 +43,9 @@
     font-size: 1.2rem;
     font-weight: 500;
     color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .video .video-channel {
@@ -87,7 +90,7 @@
 }
 
 
-.toolbar-button:hover {
+.toolbar-button:hover ,#iconToggle:hover {
     cursor: pointer;
     opacity: .7;
 }
@@ -120,4 +123,9 @@
     justify-content: center;
 }
 
+.video-duration {
+    font-size: 1rem;
+    color: #96a2b7;
+    /*display: inline;*/
+}
 

@@ -9,12 +9,12 @@
 
 {% block main %}
     <div class="toolbar">
-        <form action="/add" class="toolbar-left" method="post">
+        <form action="/add" class="toolbar-left" id="add-form" method="post">
             <input type="text" name="link" class="url-input" placeholder="Link of video or playlist" autocomplete="off">
-            <input type="submit" value="+" class="add-button toolbar-button link-button"
-                   title="Add video/playlist to list">
-            <button type="submit" class="download-all-button toolbar-button link-button"
-                    title="Download video/playlist directly">
+            <input type="submit" value="+" class="add-button toolbar-button link-button add-btn"
+                   title="Add video/playlist to list" id="add">
+            <button type="submit" class="download-all-button toolbar-button link-button download-directly-btn"
+                    title="Download video/playlist directly" id="download">
                 <i class="fa-solid fa-circle-down"></i>
             </button>
             <input type="checkbox" id="videoCheckbox" {% if onlyAudio == "1" %}
@@ -27,11 +27,20 @@
 
         </form>
         <div class="toolbar-right">
-            <form action="/reverse_selection" method="post" title="Reverse your selection">
+            
+            <form action="/export" method="post" title="Export as CSV">
                 <button type="submit" class="download-all-button toolbar-button">
-                    <i class="fa-solid fa-object-group"></i>
+                    <i class="fa-solid fa-file-csv"></i>
                 </button>
+                <input type="text" name="type"  value="csv" hidden="hidden" class="video-url">
             </form>
+            <form action="/export" method="post" title="Export as JSON">
+                <button type="submit" class="download-all-button toolbar-button">
+                    <i class="fa-solid fa-file-code"></i>
+                </button>
+                <input type="text" name="type"  value="json" hidden="hidden" class="video-url">
+            </form>
+            &nbsp;&nbsp;&nbsp;
             <form action="/download_selected" method="post" title="Download all selected Videos">
                 <button type="submit" class="download-selected-button toolbar-button">
                     <i class="fa-regular fa-circle-down"></i>
@@ -66,35 +75,12 @@
                         {{ video.channel }}
                     </a>
                 </div>
-{#                <div class="video-duration">#}
-{#                    write duration as min or hours#}
-{#                    {% if video.duration > 3600 %}#}
-{#                        {{ video.duration // 3600 }}:#}
-{#                        {% if (video.duration % 3600) // 60 < 10 %}#}
-{#                            0{{ (video.duration % 3600) // 60 }}#}
-{#                        {% else %}#}
-{#                            {{ (video.duration % 3600) // 60 }}#}
-{#                        {% endif %}#}
-{#                        :#}
-{#                        {% if video.duration % 60 < 10 %}#}
-{#                            0{{ video.duration % 60 }}#}
-{#                        {% else %}#}
-{#                            {{ video.duration % 60 }}#}
-{#                        {% endif %}#}
-{#                    {% else %}#}
-{#                        {% if video.duration // 60 < 10 %}#}
-{#                            0{{ video.duration // 60 }}#}
-{#                        {% else %}#}
-{#                            {{ video.duration // 60 }}#}
-{#                        {% endif %}#}
-{#                        :#}
-{#                        {% if video.duration % 60 < 10 %}#}
-{#                            0{{ video.duration % 60 }}#}
-{#                        {% else %}#}
-{#                            {{ video.duration % 60 }}#}
-{#                        {% endif %}#}
-{#                    {% endif %}#}
-{#                </div>#}
+                <div class="video-duration">
+                    {{ video.views }} views
+                </div>
+                <div class="video-duration">
+                    {{ video.duration }}
+                </div>
             
                 <form action="/download" method="post" title="Download this Videos">
                     <button type="submit" class="download-all-button toolbar-button">
@@ -112,9 +98,8 @@
             </div>
         {% endfor %}
     </div>
-
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', path='check_video.js') }}"></script>
+    <script src="{{ url_for('static', path='index.js') }}"></script>
 {% endblock %}

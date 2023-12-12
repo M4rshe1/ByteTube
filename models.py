@@ -7,7 +7,6 @@ class Videos(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    description = Column(String, index=True)
     url = Column(String, index=True)
     views = Column(String, index=True)
     channel = Column(String, index=True)
