@@ -9,15 +9,16 @@ def download(link: str, only_audio, progress, total: int = 1) -> bool:
             print(link)
             playlist = pytube.Playlist(link)
             print(f"Downloading: {playlist.title}")
+            print(len(playlist.videos))
             progress.total = len(playlist.videos)
             for video in playlist.videos:
                 progress["progress"] += 1
                 if only_audio == "1":
                     stream = video.streams.get_audio_only()
+                    stream.download(os.path.expanduser("~/Downloads/ByteTube"), filename=video.title + ".mp3")
                 else:
                     stream = video.streams.get_highest_resolution()
-                # download to the downloads folder of the current user
-                stream.download(os.path.expanduser("~/Downloads/ByteTube"))
+                    stream.download(os.path.expanduser("~/Downloads/ByteTube"))
             progress["progress"] = 0
             progress["total"] = 0
         except Exception as e:
@@ -30,10 +31,12 @@ def download(link: str, only_audio, progress, total: int = 1) -> bool:
             print(f"Downloading: {yt.title}")
             if only_audio == "1":
                 stream = yt.streams.get_audio_only()
+                stream.download(os.path.expanduser("~/Downloads/ByteTube"), filename=yt.title + ".mp3")
             else:
                 stream = yt.streams.get_highest_resolution()
-            # download to the downloads folder of the current user
-            stream.download(os.path.expanduser("~/Downloads/ByteTube"))
+                stream.download(os.path.expanduser("~/Downloads/ByteTube"))
+            progress["progress"] = 0
+            progress["total"] = 0
         except Exception as e:
             print(e)
             error = True

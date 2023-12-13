@@ -26,9 +26,9 @@ def do(db, type: str):
         if type == "csv":
             with open(os.path.expanduser("~/Downloads/ByteTube/export.csv"), "w") as f:
                 writer = csv.DictWriter(f, fieldnames=converted_data[0].keys())
-            writer.writeheader()
-            for data in converted_data:
-                writer.writerow(data)
+                writer.writeheader()
+                for data in converted_data:
+                    writer.writerow(data)
         elif type == "json":
             with open(os.path.expanduser("~/Downloads/ByteTube/export.json"), "w") as f:
                 json.dump(converted_data, f, indent=4)

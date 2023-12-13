@@ -96,6 +96,7 @@
             </form>
         </div>
     </div>
+    <div class="stats"><span><span class="stats-title">videos: </span><span class="stats-value">{{ stats.videos }}</span> | <span class="stats-title"> selected: </span><span class="stats-value" id="count-selected">{{ stats.selected }}</span></span></div>
     <div class="videos">
         {% for video in videos %}
             <div class="video">
@@ -120,12 +121,12 @@
                     {{ video.duration }}
                 </div>
 
-                <form action="/download" method="post" title="Download this Videos">
-                    <button type="submit" class="download-all-button toolbar-button">
+                <div title="Download this Videos">
+                    <button type="submit" class="download-all-button toolbar-button download-this-btn">
                         <i class="fa-solid fa-circle-down"></i>
                     </button>
                     <input type="text" value="{{ video.url }}" name="links" hidden="hidden" class="video-url">
-                </form>
+                </div>
 
                 <form action="/delete" method="post" title="Delete this video">
                     <button type="submit" class="delete-all-button toolbar-button">

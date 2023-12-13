@@ -185,3 +185,19 @@ header {
     transition: all .2s;
 }
 
+.stats {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    color: #fff;
+}
+
+.stats .stats-title {
+    font-weight: bold;
+}
+
+.stats .stats-value {
+    font-size: 1.2rem;
+    color: #497abb;
+}

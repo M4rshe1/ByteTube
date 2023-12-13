@@ -4,7 +4,6 @@ import models
 
 def get_video_data(link: str, progress: dict, db):
     progress["progress"] = 0
-    print(link)
     if "playlist" in link:
         data = get_playlist_videos(link, progress, db)
         if data:
@@ -13,7 +12,7 @@ def get_video_data(link: str, progress: dict, db):
         return data
     else:
         progress["total"] = 1
-        data = video_data(link)
+        data = video_data(link, db)
         progress["progress"] = 0
         progress["total"] = 0
         return data
@@ -22,7 +21,6 @@ def get_video_data(link: str, progress: dict, db):
 def get_playlist_videos(link: str, progress: dict, db):
     try:
         playlist = pytube.Playlist(link)
-        print(playlist.title)
         progress["total"] = len(playlist.videos)
         for video in playlist.videos:
             video_data(video.watch_url, db)

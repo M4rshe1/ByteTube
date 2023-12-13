@@ -33,7 +33,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 def root(request: Request, db: Session = Depends(get_db)):
     # print(progress)
+
     videos = db.query(models.Videos).all()
+
+    stats = {"videos": len(videos), "selected": 0}
+    for video in videos:
+        if video.selected:
+            stats["selected"] += 1
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
     if only_audio is None:
         only_audio = models.Settings(setting="onlyAudio", value="False")
@@ -46,13 +52,14 @@ def root(request: Request, db: Session = Depends(get_db)):
         "videos": videos,
         "onlyAudio": only_audio.value,
         "progress": progress.get("progress"),
-        "total": progress.get("total")
+        "total": progress.get("total"),
+        "stats": stats,
     })
 
 
 @app.post("/add")
-async def add(background_tasks: BackgroundTasks,
-              db: Session = Depends(get_db), links: str = Form(...)):
+def add(request: Request, background_tasks: BackgroundTasks,
+        db: Session = Depends(get_db), links: str = Form(...)):    
     background_tasks.add_task(modules.get_video_data, links, progress, db)
     # data = modules.get_video_data(links, progress)
     # if data:
@@ -73,23 +80,24 @@ async def add(background_tasks: BackgroundTasks,
 
 
 @app.post("/settings")
-def settings(db: Session = Depends(get_db), value: bool = Form(...), setting: str = Form(...)):
+def settings(request: Request, db: Session = Depends(get_db), value: bool = Form(...), setting: str = Form(...)):
     db.query(models.Settings).filter(models.Settings.setting == setting).update({models.Settings.value: value})
     db.commit()
     return {"status": 200, "message": "Settings updated"}
 
 
 @app.post("/download")
-async def download(background_tasks: BackgroundTasks, db: Session = Depends(get_db), links: str = Form(...)):
-
+async def download(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db),
+                   links: str = Form(...)):
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+    print(links)
     background_tasks.add_task(modules.download, links, only_audio.value, progress, 1)
     db.query(models.Videos).filter(models.Videos.url == links).update({models.Videos.downloaded: True})
     return {"status": 200}
 
 
 @app.post("/download_all")
-def download_all(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def download_all(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
     links = db.query(models.Videos).all()
 
@@ -98,7 +106,7 @@ def download_all(background_tasks: BackgroundTasks, db: Session = Depends(get_db
 
 
 @app.post("/download_selected", )
-def download_selected(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def download_selected(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     links = db.query(models.Videos).filter(models.Videos.selected == True).all()
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
     background_tasks.add_task(modules.download_multi, links, only_audio.value, progress)
@@ -106,7 +114,7 @@ def download_selected(background_tasks: BackgroundTasks, db: Session = Depends(g
 
 
 @app.post("/check")
-def check(db: Session = Depends(get_db), links: str = Form(...)):
+def check(request: Request, db: Session = Depends(get_db), links: str = Form(...)):
     links = links.split("\r\n")
     for link in links:
         db.query(models.Videos).filter(models.Videos.url == link).update(
@@ -116,7 +124,7 @@ def check(db: Session = Depends(get_db), links: str = Form(...)):
 
 
 @app.post("/delete")
-def delete(db: Session = Depends(get_db), links: str = Form(...)):
+def delete(request: Request, db: Session = Depends(get_db), links: str = Form(...)):
     links = links.split("\r\n")
     for link in links:
         db.query(models.Videos).filter(models.Videos.url == link).delete()
@@ -125,7 +133,7 @@ def delete(db: Session = Depends(get_db), links: str = Form(...)):
 
 
 @app.post("/delete_all")
-def delete_all(db: Session = Depends(get_db)):
+def delete_all(request: Request, db: Session = Depends(get_db)):
     for video in db.query(models.Videos).all():
         db.delete(video)
     db.commit()
@@ -133,7 +141,7 @@ def delete_all(db: Session = Depends(get_db)):
 
 
 @app.post("/reverse_selection")
-def reverse_selection(db: Session = Depends(get_db)):
+def reverse_selection(request: Request, db: Session = Depends(get_db)):
     for video in db.query(models.Videos).all():
         db.query(models.Videos).filter(models.Videos.url == video.url).update(
             {models.Videos.selected: ~models.Videos.selected})
@@ -142,7 +150,7 @@ def reverse_selection(db: Session = Depends(get_db)):
 
 
 @app.post("/select_all")
-def select_all(db: Session = Depends(get_db)):
+def select_all(request: Request, db: Session = Depends(get_db)):
     for video in db.query(models.Videos).all():
         db.query(models.Videos).filter(models.Videos.url == video.url).update(
             {models.Videos.selected: True})
@@ -151,7 +159,7 @@ def select_all(db: Session = Depends(get_db)):
 
 
 @app.post("/export")
-def export(db: Session = Depends(get_db), convert: str = Form(...)):
+def export(request: Request, db: Session = Depends(get_db), convert: str = Form(...)):
     if modules.export.do(db, convert):
         return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     else:
@@ -164,10 +172,10 @@ def get_progress():
 
 
 @app.exception_handler(405)
-async def method_not_allowed():
+async def method_not_allowed(request: Request, exc):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.exception_handler(404)
-async def not_found():
+async def not_found(request: Request, exc):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
