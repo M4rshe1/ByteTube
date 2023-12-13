@@ -3,19 +3,7 @@ $(".video-checkbox").on("click", function () {
     let link = $(this).parent().find(".video-url").val();
     let requestData = {links: link}; // Data formatted to match your endpoint
 
-    $.ajax({
-        url: "/check",
-        type: "POST",
-        data: requestData, // Sending data in the format expected by the endpoint
-        success: function (data) {
-            console.log(data);
-            // Handle the response as needed
-        },
-        error: function (error) {
-            console.error("Error:", error);
-            // Handle errors, if any
-        }
-    });
+    sendRequest("/check", requestData, "POST")
 });
 
 
@@ -26,43 +14,71 @@ $("#videoCheckbox").on("click", function () {
     let requestData = {value: checked, setting: "onlyAudio"};
     console.log(requestData)
 
+    sendRequest("/settings", requestData, "POST")
+});
+
+
+$("#download").on("click", function () {
+
+    let btn = $(this);
+    let input = btn.parent().find(".url-input");
+    let urlInput = input.val();
+    input.val("");
+    let requestData = {links: urlInput};
+
+    sendRequest("/download", requestData, "POST")
+});
+
+$("#add").on("click", function () {
+    let btn = $(this);
+    let input = btn.parent().find(".url-input");
+    let urlInput = input.val();
+    input.val("");
+
+    let requestData = {links: urlInput};
+
+    sendRequest("/add", requestData, "POST")
+    window.location.reload();
+});
+
+
+function sendRequest(url, data, method) {
     $.ajax({
-        url: "/settings",
-        type: "POST",
-        data: requestData,
+        url: url,
+        type: method,
+        data: data,
         success: function (data) {
             console.log(data);
-            // Handle the response as needed
+            return data;
         },
         error: function (error) {
             console.error("Error:", error);
-            // Handle errors, if any
+            return error;
         }
     });
-});
-let submitted = false;
-$("#add-form").on("submit", function (event) {
-    if (submitted) {
-        
-    event.preventDefault(); // Prevent the default form submission behavior
+}
 
-    let form = $(this);
-    let urlInput = form.find(".url-input").val();
-    let btn = $(event.target)
-    console.log(btn)
-    
-    
-    if (btn.hasClass("add-btn")) {
-        form.action = "/add"
-    } else if (btn.hasClass("download-directly-btn")) {
-        form.action = "/download"
-    }
 
-    if (urlInput !== "") {
-        
-        form.submit()
-        submitted = true;
-    }
-    }
-});
+function updateProgress() {
+    $.ajax({
+        url: '/progress',
+        method: 'post',
+        success: function (data) {
+            console.log(data);
+            if (data["progress"] !== data["total"]) {
+                // $("#in-progress-blocker").show();
+                // $("#in-progress-title").text("Precessed " + data["progress"] + " of " + data["total"] + " videos");
+                // $("#in-progress-bar").width(data["progress"] / data["total"] * 100 + "%");
+                window.location.reload();
+            } else {
+                $("#in-progress-blocker").hide();
+            }
+        }
+    });
+}
+
+
+setInterval(function () {
+    updateProgress();
+}, 1000);
 

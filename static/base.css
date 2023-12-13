@@ -49,8 +49,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 19px;
+    padding: 16px;
     background: #090d0e;
+    min-width: 100%;
+    max-width: 100%;
 }
 
 .title-byte {
@@ -92,4 +94,26 @@ header button {
     outline: none;
     cursor: pointer;
 }
+
+/*scrollbar*/
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #090d0e;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #152323;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #191e1f;
+}
+
 

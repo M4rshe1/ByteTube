@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Depends, Request, Form, status
-# BackgroundTasks
+from fastapi import FastAPI, Depends, Request, Form, status, BackgroundTasks
 
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -14,8 +13,7 @@ import modules
 
 models.Base.metadata.create_all(bind=engine)
 
-IN_PROGRESS = False
-IS_DOWNLOADING = False
+progress: dict = {"progress": 0, "total": 0}
 
 
 def get_db():
@@ -34,32 +32,35 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def root(request: Request, db: Session = Depends(get_db)):
+    # print(progress)
     videos = db.query(models.Videos).all()
-    onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
-    if onlyaudio is None:
-        onlyaudio = models.Settings(setting="onlyAudio", value="False")
-        db.add(onlyaudio)
+    only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+    if only_audio is None:
+        only_audio = models.Settings(setting="onlyAudio", value="False")
+        db.add(only_audio)
         db.commit()
-        onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+        only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
 
     return templates.TemplateResponse("index.html", {
         "request": request,
         "videos": videos,
-        "onlyAudio": onlyaudio.value,
-        "inProgress": IN_PROGRESS,
-        "isDownloading": IS_DOWNLOADING
+        "onlyAudio": only_audio.value,
+        "progress": progress.get("progress"),
+        "total": progress.get("total")
     })
 
 
 @app.post("/add")
-async def add(request: Request, db: Session = Depends(get_db), link: str = Form(...)):
-    data = modules.get_video_data(link)
-    if data:
-        for video in data:
-            db_video = models.Videos(**video)
-            db.add(db_video)
-        db.commit()
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+async def add(background_tasks: BackgroundTasks,
+              db: Session = Depends(get_db), links: str = Form(...)):
+    background_tasks.add_task(modules.get_video_data, links, progress, db)
+    # data = modules.get_video_data(links, progress)
+    # if data:
+    #     for video in data:
+    #         db_video = models.Videos(**video)
+    #         db.add(db_video)
+    #     db.commit()
+    return {"status": 200}
 
 
 # @app.post("/stop_app")
@@ -72,57 +73,40 @@ async def add(request: Request, db: Session = Depends(get_db), link: str = Form(
 
 
 @app.post("/settings")
-def settings(request: Request, db: Session = Depends(get_db), value: bool = Form(...), setting: str = Form(...)):
+def settings(db: Session = Depends(get_db), value: bool = Form(...), setting: str = Form(...)):
     db.query(models.Settings).filter(models.Settings.setting == setting).update({models.Settings.value: value})
     db.commit()
     return {"status": 200, "message": "Settings updated"}
 
 
 @app.post("/download")
-async def download(request: Request, db: Session = Depends(get_db), links: str = Form(...)):
-    error = False
-    links = links.split("\r\n")
-    onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+async def download(background_tasks: BackgroundTasks, db: Session = Depends(get_db), links: str = Form(...)):
 
-    for link in links:
-        error = modules.download(link, onlyaudio.value)
-        if error:
-            db.query(models.Videos).filter(models.Videos.url == link).update({models.Videos.failed: True})
-        else:
-            db.query(models.Videos).filter(models.Videos.url == link).update({models.Videos.downloaded: True})
-    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+    only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+    background_tasks.add_task(modules.download, links, only_audio.value, progress, 1)
+    db.query(models.Videos).filter(models.Videos.url == links).update({models.Videos.downloaded: True})
+    return {"status": 200}
 
 
 @app.post("/download_all")
-def download_all(request: Request, db: Session = Depends(get_db)):
-    error = False
-    onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+def download_all(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
     links = db.query(models.Videos).all()
-    for link in links:
-        error = modules.download(link.url, onlyaudio.value)
-        if error:
-            db.query(models.Videos).filter(models.Videos.url == link.url).update({models.Videos.failed: True})
-        else:
-            db.query(models.Videos).filter(models.Videos.url == link.url).update({models.Videos.downloaded: True})
+
+    background_tasks.add_task(modules.download_multi, links, only_audio.value, progress)
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@app.post("/download_selected")
-def download_selected(request: Request, db: Session = Depends(get_db)):
-    error = False
+@app.post("/download_selected", )
+def download_selected(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     links = db.query(models.Videos).filter(models.Videos.selected == True).all()
-    onlyaudio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
-    for link in links:
-        error = modules.download(link.url, onlyaudio.value)
-        if error:
-            db.query(models.Videos).filter(models.Videos.url == link.url).update({models.Videos.failed: True})
-        else:
-            db.query(models.Videos).filter(models.Videos.url == link.url).update({models.Videos.downloaded: True})
+    only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+    background_tasks.add_task(modules.download_multi, links, only_audio.value, progress)
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.post("/check")
-def check(request: Request, db: Session = Depends(get_db), links: str = Form(...)):
+def check(db: Session = Depends(get_db), links: str = Form(...)):
     links = links.split("\r\n")
     for link in links:
         db.query(models.Videos).filter(models.Videos.url == link).update(
@@ -132,7 +116,7 @@ def check(request: Request, db: Session = Depends(get_db), links: str = Form(...
 
 
 @app.post("/delete")
-def delete(request: Request, db: Session = Depends(get_db), links: str = Form(...)):
+def delete(db: Session = Depends(get_db), links: str = Form(...)):
     links = links.split("\r\n")
     for link in links:
         db.query(models.Videos).filter(models.Videos.url == link).delete()
@@ -141,7 +125,7 @@ def delete(request: Request, db: Session = Depends(get_db), links: str = Form(..
 
 
 @app.post("/delete_all")
-def delete_all(request: Request, db: Session = Depends(get_db)):
+def delete_all(db: Session = Depends(get_db)):
     for video in db.query(models.Videos).all():
         db.delete(video)
     db.commit()
@@ -149,7 +133,7 @@ def delete_all(request: Request, db: Session = Depends(get_db)):
 
 
 @app.post("/reverse_selection")
-def reverse_selection(request: Request, db: Session = Depends(get_db)):
+def reverse_selection(db: Session = Depends(get_db)):
     for video in db.query(models.Videos).all():
         db.query(models.Videos).filter(models.Videos.url == video.url).update(
             {models.Videos.selected: ~models.Videos.selected})
@@ -157,20 +141,33 @@ def reverse_selection(request: Request, db: Session = Depends(get_db)):
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
+@app.post("/select_all")
+def select_all(db: Session = Depends(get_db)):
+    for video in db.query(models.Videos).all():
+        db.query(models.Videos).filter(models.Videos.url == video.url).update(
+            {models.Videos.selected: True})
+    db.commit()
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
 @app.post("/export")
-def export(request: Request, db: Session = Depends(get_db), type: str = Form(...)):
-    if modules.export.do(db, type):
+def export(db: Session = Depends(get_db), convert: str = Form(...)):
+    if modules.export.do(db, convert):
         return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     else:
         return {"status": 500, "message": "Something went wrong"}
 
 
+@app.post("/progress")
+def get_progress():
+    return progress
+
+
 @app.exception_handler(405)
-async def method_not_allowed(request, exc):
+async def method_not_allowed():
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.exception_handler(404)
-async def not_found(request, exc):
+async def not_found():
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-

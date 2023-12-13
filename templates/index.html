@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}ByteTubeDive | Download as many YouTube videos you want!!!{% endblock %}
+{% block title %}ByteTube | Download as many YouTube videos you want!!!{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='index.css') }}">
@@ -8,12 +8,39 @@
 {% endblock %}
 
 {% block main %}
+    <Header>
+        <form action="/stop_app" method="post" title="Stop the app. This will also kill all your running downloads"
+              id="stop-form">
+            {#        <button type="submit"><i class="fa-solid fa-power-off header-icon-stop"></i></button>#}
+        </form>
+        <a href="/">
+            <span class="title-byte">Byte</span>
+            <span class="title-tube">Tube</span>
+        </a>
+        <a href="https://github.com/M4rshe1/ByteTube" target="_blank">
+            <i class="fa-brands fa-square-github header-icon-github"></i>
+        </a>
+    </Header>
+    {% if progress != total %}
+        <div class="in-progress-blocker" id="in-progress-blocker"
+             hidden="hidden">
+            <div class="in-progress">
+                <div class="in-progress-title" id="in-progress-title">
+                    Precessed {{ progress }} of {{ total }} videos
+                </div>
+                <div class="in-progress-bar">
+                    <div class="in-progress-bar-fill" id="in-progress-bar-fill"
+                         style="width: {{ progress / total * 100 }}%"></div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <div class="toolbar">
-        <form action="/add" class="toolbar-left" id="add-form" method="post">
+        <div class="toolbar-left">
             <input type="text" name="link" class="url-input" placeholder="Link of video or playlist" autocomplete="off">
-            <input type="submit" value="+" class="add-button toolbar-button link-button add-btn"
+            <input type="button" value="+" class="add-button toolbar-button link-button add-btn"
                    title="Add video/playlist to list" id="add">
-            <button type="submit" class="download-all-button toolbar-button link-button download-directly-btn"
+            <button type="button" class="download-all-button toolbar-button link-button download-directly-btn"
                     title="Download video/playlist directly" id="download">
                 <i class="fa-solid fa-circle-down"></i>
             </button>
@@ -25,20 +52,31 @@
                 <i class="fa-solid fa-video-slash"></i>
             </label>
 
-        </form>
+        </div>
         <div class="toolbar-right">
-            
+
             <form action="/export" method="post" title="Export as CSV">
-                <button type="submit" class="download-all-button toolbar-button">
+                <button type="submit" class="export-button toolbar-button">
                     <i class="fa-solid fa-file-csv"></i>
                 </button>
-                <input type="text" name="type"  value="csv" hidden="hidden" class="video-url">
+                <input type="text" name="convert" value="csv" hidden="hidden" class="video-url">
             </form>
             <form action="/export" method="post" title="Export as JSON">
-                <button type="submit" class="download-all-button toolbar-button">
+                <button type="submit" class="export-button toolbar-button">
                     <i class="fa-solid fa-file-code"></i>
                 </button>
-                <input type="text" name="type"  value="json" hidden="hidden" class="video-url">
+                <input type="text" name="convert" value="json" hidden="hidden" class="video-url">
+            </form>
+            &nbsp;&nbsp;&nbsp;
+            <form action="/reverse_selection" method="post" title="Reverse your Selection">
+                <button type="submit" class="download-selected-button toolbar-button">
+                    <i class="fa-solid fa-object-ungroup"></i>
+                </button>
+            </form>
+            <form action="/select_all" method="post" title="Select al videos">
+                <button type="submit" class="download-selected-button toolbar-button">
+                    <i class="fa-solid fa-object-group"></i>
+                </button>
             </form>
             &nbsp;&nbsp;&nbsp;
             <form action="/download_selected" method="post" title="Download all selected Videos">
@@ -81,7 +119,7 @@
                 <div class="video-duration">
                     {{ video.duration }}
                 </div>
-            
+
                 <form action="/download" method="post" title="Download this Videos">
                     <button type="submit" class="download-all-button toolbar-button">
                         <i class="fa-solid fa-circle-down"></i>
