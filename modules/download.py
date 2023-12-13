@@ -9,6 +9,7 @@ def download(link: str, only_audio, progress, total: int = 1) -> bool:
             print(link)
             playlist = pytube.Playlist(link)
             print(f"Downloading: {playlist.title}")
+            print(len(playlist.videos))
             progress.total = len(playlist.videos)
             for video in playlist.videos:
                 progress["progress"] += 1

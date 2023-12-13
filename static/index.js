@@ -2,6 +2,13 @@ $(".video-checkbox").on("click", function () {
     console.log("clicked");
     let link = $(this).parent().find(".video-url").val();
     let requestData = {links: link}; // Data formatted to match your endpoint
+    
+    let selectedCount = $("#count-selected");
+    if ($(this).is(":checked")) {
+        selectedCount.text(parseInt(selectedCount.text()) + 1);
+    } else {
+        selectedCount.text(parseInt(selectedCount.text()) - 1);
+    }
 
     sendRequest("/check", requestData, "POST")
 });
@@ -70,8 +77,8 @@ function updateProgress() {
                 // $("#in-progress-title").text("Precessed " + data["progress"] + " of " + data["total"] + " videos");
                 // $("#in-progress-bar").width(data["progress"] / data["total"] * 100 + "%");
                 window.location.reload();
-            } else {
-                $("#in-progress-blocker").hide();
+            } else if ($("#in-progress-blocker").is(":visible")) {
+                window.location.reload();
             }
         }
     });
