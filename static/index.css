@@ -144,6 +144,9 @@ header {
     font-size: 1rem;
     color: #96a2b7;
     /*display: inline;*/
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .in-progress-blocker {

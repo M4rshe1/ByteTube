@@ -99,7 +99,7 @@ async def download(request: Request, background_tasks: BackgroundTasks, db: Sess
 @app.post("/download_all")
 def download_all(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
-    links = db.query(models.Videos).all()
+    links = db.query(models.Videos.url).all()
 
     background_tasks.add_task(modules.download_multi, links, only_audio.value, progress)
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
