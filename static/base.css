@@ -74,6 +74,10 @@ header {
     transition: all .2s;
 }
 
+.header-icon-logo {
+    height: 50px;
+}
+
 .header-icon-github:hover {
     color: #497abb;
 }

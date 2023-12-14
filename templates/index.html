@@ -9,9 +9,9 @@
 
 {% block main %}
     <Header>
-        <form action="/stop_app" method="post" title="Stop the app. This will also kill all your running downloads"
-              id="stop-form">
+        <form action="/stop_app" method="post" id="stop-form">
             {#        <button type="submit"><i class="fa-solid fa-power-off header-icon-stop"></i></button>#}
+            <img src="{{ url_for('static', path='favicon.ico') }}" alt="" class="header-icon-logo">
         </form>
         <a href="/">
             <span class="title-byte">Byte</span>
@@ -26,7 +26,8 @@
              hidden="hidden">
             <div class="in-progress">
                 <div class="in-progress-title" id="in-progress-title">
-                    Precessed {{ progress }} of {{ total }} videos
+                    Processed {{ progress }} of {{ total }} videos
+                    
                 </div>
                 <div class="in-progress-bar">
                     <div class="in-progress-bar-fill" id="in-progress-bar-fill"
@@ -37,7 +38,10 @@
     {% endif %}
     <div class="toolbar">
         <div class="toolbar-left">
-            <input type="text" name="link" class="url-input" placeholder="Link of video or playlist" autocomplete="off">
+        <label class="toolbar-label">
+            <span class="toolbar-label-text">Link</span>
+            <input type="text" name="link" class="url-input" autocomplete="off">
+        </label>
             <input type="button" value="+" class="add-button toolbar-button link-button add-btn"
                    title="Add video/playlist to list" id="add">
             <button type="button" class="download-all-button toolbar-button link-button download-directly-btn"

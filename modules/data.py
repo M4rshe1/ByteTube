@@ -33,7 +33,7 @@ def get_playlist_videos(link: str, progress: dict, db):
 
 def video_data(link: str, db):
     database_links = [video.url for video in db.query(models.Videos).all()]
-    print(database_links)
+    # print(database_links)
     tmp_link = str(link).split("&")[0].replace("www.", "")
     if tmp_link not in database_links:
         try:
@@ -59,10 +59,16 @@ def video_data(link: str, db):
             else:
                 duration = f"{hours}:{minutes}:{seconds}"
 
+            views = str(yt.views)
+            views = views[::-1]
+            views = [views[i:i+3] for i in range(0, len(views), 3)]
+            views = "'".join(views)
+            views = views[::-1]
+
             video = {
                 "title": yt.title,
                 "url": yt.watch_url,
-                "views": yt.views,
+                "views": views,
                 "channel": yt.author,
                 "channel_url": yt.channel_url,
                 "upload_date": yt.publish_date,
