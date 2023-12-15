@@ -90,7 +90,6 @@ def settings(request: Request, db: Session = Depends(get_db), value: bool = Form
 async def download(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db),
                    links: str = Form(...)):
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
-    print(links)
     background_tasks.add_task(modules.download, links, only_audio.value, progress, 1)
     db.query(models.Videos).filter(models.Videos.url == links).update({models.Videos.downloaded: True})
     return {"status": 200}
@@ -108,7 +107,10 @@ def download_all(request: Request, background_tasks: BackgroundTasks, db: Sessio
 @app.post("/download_selected", )
 def download_selected(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     links = db.query(models.Videos).filter(models.Videos.selected == True).all()
+    links = [link.url for link in links]
+    # print(links)
     only_audio = db.query(models.Settings).filter(models.Settings.setting == "onlyAudio").first()
+    # links = [link.url for link in links]
     background_tasks.add_task(modules.download_multi, links, only_audio.value, progress)
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 

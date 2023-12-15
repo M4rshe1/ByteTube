@@ -19,6 +19,7 @@
 
 .toolbar-label {
     display: flex;
+    position: relative;
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
@@ -28,26 +29,26 @@
 
 .toolbar-label .toolbar-label-text {
     font-size: 1rem;
+    position: absolute;
     margin: .2rem .2rem 0 .2rem;
     color: #b9b9b9;
     font-weight: normal;
-    transform: translateY(.7rem);
+    transform: translateY(-1.3rem);
     padding: .2rem;
-    /*background: #0e1717;*/
+    background: #0e1717;
     border-radius: 5px;
 }
 
 .url-input {
-    border: none;
     outline: none;
     font-size: 1rem;
     height: 30px;
     width: 16rem;
-    padding: 0 .5rem;
-    /*border-radius: 5px;*/
+    padding: .2rem .5rem;
+    border-radius: 5px;
     background: #0e1717;
     color: #fff;
-    border-bottom: solid 1px #39535a;
+    border: solid 2px #39535a;
 }
 
 header {
@@ -59,7 +60,7 @@ header {
 
 .toolbar {
     position: sticky;
-    top: 82px;
+    top: 86px;
     max-width: 100%;
 }
 

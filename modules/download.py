@@ -28,7 +28,8 @@ def download(link: str, only_audio, progress, total: int = 1) -> bool:
             print(f"Downloading: {yt.title}")
             if only_audio == "1":
                 stream = yt.streams.get_audio_only()
-                stream.download(os.path.expanduser("~/Downloads/ByteTube"), filename=yt.title + ".mp3")
+                stream.download(os.path.expanduser("~/Downloads/ByteTube"), 
+                                filename=yt.title.replace("/", "").replace("\\", "") + ".mp3")
             else:
                 stream = yt.streams.get_highest_resolution()
                 stream.download(os.path.expanduser("~/Downloads/ByteTube"))
@@ -42,7 +43,6 @@ def download(link: str, only_audio, progress, total: int = 1) -> bool:
 def download_multi(links: list, only_audio, progress):
     total = len(links)
     progress["total"] = total
-    links = [link[0] for link in links]
     print(links)
     for link in links:
         print(link)

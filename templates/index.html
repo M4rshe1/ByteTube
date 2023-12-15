@@ -74,12 +74,12 @@
             &nbsp;&nbsp;&nbsp;
             <form action="/reverse_selection" method="post" title="Reverse your Selection">
                 <button type="submit" class="download-selected-button toolbar-button">
-                    <i class="fa-solid fa-object-ungroup"></i>
+                    <i class="fa-solid fa-object-group"></i>
                 </button>
             </form>
             <form action="/select_all" method="post" title="Select al videos">
                 <button type="submit" class="download-selected-button toolbar-button">
-                    <i class="fa-solid fa-object-group"></i>
+                    <i class="fa-solid fa-object-ungroup"></i>
                 </button>
             </form>
             &nbsp;&nbsp;&nbsp;
@@ -100,7 +100,7 @@
             </form>
         </div>
     </div>
-    <div class="stats"><span><span class="stats-title">videos: </span><span class="stats-value">{{ stats.videos }}</span> | <span class="stats-title"> selected: </span><span class="stats-value" id="count-selected">{{ stats.selected }}</span></span></div>
+    <div class="stats"><span><span class="stats-title">Selected</span> <span class="stats-value" id="count-selected">{{ stats.selected }}</span> of  <span class="stats-value">{{ stats.videos }}</span> <span class="stats-title">videos</span></span></div>
     <div class="videos">
         {% for video in videos %}
             <div class="video">
