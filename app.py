@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Depends, Request, Form, status, BackgroundTasks
+from __future__ import annotations
+
+from fastapi import FastAPI, Depends, Request, Form, status, BackgroundTasks, File, UploadFile
 
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -163,6 +165,16 @@ def select_all(request: Request, db: Session = Depends(get_db)):
 @app.post("/export")
 def export(request: Request, db: Session = Depends(get_db), convert: str = Form(...)):
     if modules.export.do(db, convert):
+        return {"status": 200, "message": f'Exported file successfully to ~/Downloads/ByteTube/export.{convert}'}
+    else:
+        return {"status": 500, "message": "Something went wrong"}
+
+
+@app.post("/import")
+def import_(db: Session = Depends(get_db), file: UploadFile = File(...),
+            delete_before_import: bool = Form(...)):
+
+    if modules.import_.do_import(db, file, delete_before_import):
         return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     else:
         return {"status": 500, "message": "Something went wrong"}

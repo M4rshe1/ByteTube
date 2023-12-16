@@ -2,7 +2,9 @@ import os
 import pytube
 
 
-def download(link: str, only_audio, progress, total: int = 1) -> bool:
+def download(link: str, only_audio, progress, total: int = 1):
+    if not os.path.exists(os.path.expanduser("~/Downloads/ByteTube")):
+        os.mkdir(os.path.expanduser("~/Downloads/ByteTube"))
     if "playlist" in link:
         try:
             playlist = pytube.Playlist(link)

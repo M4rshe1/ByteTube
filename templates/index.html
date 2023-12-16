@@ -27,7 +27,7 @@
             <div class="in-progress">
                 <div class="in-progress-title" id="in-progress-title">
                     Processed {{ progress }} of {{ total }} videos
-                    
+
                 </div>
                 <div class="in-progress-bar">
                     <div class="in-progress-bar-fill" id="in-progress-bar-fill"
@@ -38,10 +38,10 @@
     {% endif %}
     <div class="toolbar">
         <div class="toolbar-left">
-        <label class="toolbar-label">
-            <span class="toolbar-label-text">Link</span>
-            <input type="text" name="link" class="url-input" autocomplete="off">
-        </label>
+            <label class="toolbar-label">
+                <span class="toolbar-label-text">Link</span>
+                <input type="text" name="link" class="url-input" autocomplete="off">
+            </label>
             <input type="button" value="+" class="add-button toolbar-button link-button add-btn"
                    title="Add video/playlist to list" id="add">
             <button type="button" class="download-all-button toolbar-button link-button download-directly-btn"
@@ -58,19 +58,32 @@
 
         </div>
         <div class="toolbar-right">
-
-            <form action="/export" method="post" title="Export as CSV">
-                <button type="submit" class="export-button toolbar-button">
+            <form title="Import files" method="post" action="/import" enctype="multipart/form-data">
+                <button type="button" id="import-btn" class="import-button toolbar-button">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                </button>
+                <input type="file" name="file" hidden="hidden" class="file-input">
+                <input type="checkbox" name="delete_before_import" hidden="hidden" class="file-input-checkbox">
+            </form>
+            &nbsp;&nbsp;&nbsp;
+            <div title="Export as TXT">
+                <button type="submit" class="export-button toolbar-button" file="txt">
+                    <i class="fa-solid fa-file-lines"></i>
+                </button>
+                {#                <input type="text" name="convert" value="txt" hidden="hidden" class="video-url">#}
+            </div>
+            <div title="Export as CSV">
+                <button type="submit" class="export-button toolbar-button" file="csv">
                     <i class="fa-solid fa-file-csv"></i>
                 </button>
-                <input type="text" name="convert" value="csv" hidden="hidden" class="video-url">
-            </form>
-            <form action="/export" method="post" title="Export as JSON">
-                <button type="submit" class="export-button toolbar-button">
+                {#                <input type="text" name="convert" value="csv" hidden="hidden" class="video-url">#}
+            </div>
+            <div title="Export as JSON">
+                <button type="submit" class="export-button toolbar-button" file="json">
                     <i class="fa-solid fa-file-code"></i>
                 </button>
-                <input type="text" name="convert" value="json" hidden="hidden" class="video-url">
-            </form>
+                {#                <input type="text" name="convert" value="json" hidden="hidden" class="video-url">#}
+            </div>
             &nbsp;&nbsp;&nbsp;
             <form action="/reverse_selection" method="post" title="Reverse your Selection">
                 <button type="submit" class="download-selected-button toolbar-button">
@@ -100,7 +113,9 @@
             </form>
         </div>
     </div>
-    <div class="stats"><span><span class="stats-title">Selected</span> <span class="stats-value" id="count-selected">{{ stats.selected }}</span> of  <span class="stats-value">{{ stats.videos }}</span> <span class="stats-title">videos</span></span></div>
+    <div class="stats"><span><span class="stats-title">Selected</span> <span class="stats-value"
+                                                                             id="count-selected">{{ stats.selected }}</span> of  <span
+            class="stats-value">{{ stats.videos }}</span> <span class="stats-title">videos</span></span></div>
     <div class="videos">
         {% for video in videos %}
             <div class="video">
@@ -140,6 +155,20 @@
                 </form>
             </div>
         {% endfor %}
+    </div>
+    <div id="messages">
+{#        <div class="message-box message-warning">#}
+{#            <div class="message-header">#}
+{#                <div class="message-box-title">Error</div>#}
+{#                <div class="message-icons">#}
+{#                    <i class="fa-solid fa-circle-info message-info-icon message-icon"></i>#}
+{#                    <i class="fa-solid fa-circle-exclamation message-error-icon message-icon"></i>#}
+{#                    <i class="fa-solid fa-triangle-exclamation message-warning-icon message-icon"></i>#}
+{#                    <i class="fa-solid fa-circle-check message-success-icon message-icon"></i>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="message-box-text">This is an error message</div>#}
+{#        </div>#}
     </div>
 {% endblock %}
 

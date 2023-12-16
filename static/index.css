@@ -158,6 +158,10 @@ header {
     background: #bb9d49;
 }
 
+.import-button {
+    background: #bb6749;
+}
+
 .toolbar-button, #iconToggle {
     margin-left: .5rem;
     border: none;
@@ -239,3 +243,84 @@ header {
     font-size: 1.2rem;
     color: #497abb;
 }
+
+#messages {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.message-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: .5rem;
+    border-radius: 5px;
+    margin: .5rem;
+    color: #ffffff;
+    font-size: 1.2rem;
+    box-shadow: rgba(57, 83, 90, 0.22) 0 3px 8px;
+    transition: all .2s;
+    backdrop-filter: blur(5px);
+    width: 300px;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.message-box-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: .5rem;
+}
+
+.message-icons {
+    font-size: 1.5rem;
+    margin-right: .5rem;
+}
+
+.message-icon {
+    display: none;
+}
+
+.message-Error {
+    background: rgba(187, 73, 73, 0.9);
+}
+
+.message-Success {
+    background: rgba(99, 185, 96, 0.9);
+}
+
+.message-Info {
+    background: rgba(73, 122, 187, 0.9);
+}
+
+.message-Warning {
+    background: rgba(187, 157, 73, 0.9);
+}
+
+.message-Warning .message-Warning-icon {
+    display: inline;
+    color: #ffc72e;
+}
+
+.message-Info .message-Info-icon {
+    display: inline;
+    color: #2b88ff;
+}
+
+.message-Success .message-Success-icon {
+    display: inline;
+    color: #5aff2c;
+}
+
+.message-Error .message-Error-icon {
+    display: inline;
+    color: #ff2929;
+}
+

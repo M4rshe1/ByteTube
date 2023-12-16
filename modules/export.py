@@ -4,7 +4,9 @@ import os
 import csv
 
 
-def do(db, type: str):
+def do(db, convert: str):
+    if not os.path.exists(os.path.expanduser("~/Downloads/ByteTube")):
+        os.mkdir(os.path.expanduser("~/Downloads/ByteTube"))
     try:
         data = db.query(models.Videos).all()
         converted_data = []
@@ -23,16 +25,19 @@ def do(db, type: str):
                 "downloaded": video.downloaded,
                 "failed": video.failed,
             })
-        if type == "csv":
-            
+        if convert == "csv":
             with open(os.path.expanduser("~/Downloads/ByteTube/export.csv"), "w", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=converted_data[0].keys(), delimiter=";")
                 writer.writeheader()
                 for data in converted_data:
                     writer.writerow(data)
-        elif type == "json":
+        elif convert == "json":
             with open(os.path.expanduser("~/Downloads/ByteTube/export.json"), "w") as f:
                 json.dump(converted_data, f, indent=4)
+        elif convert == "txt":
+            with open(os.path.expanduser("~/Downloads/ByteTube/export.txt"), "w", encoding="utf-8") as f:
+                for data in converted_data:
+                    f.write(f"{data['title']}\n{data['url']}\n{data['views']}\n{data['channel']}\n{data['channel_url']}\n{data['upload_date']}\n{data['duration']}\n{data['thumbnail']}\n{data['size']}\n{data['selected']}\n{data['downloaded']}\n{data['failed']}\n\n")
         return True
     except Exception as e:
         print(e)
