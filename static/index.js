@@ -123,6 +123,9 @@ function updateProgress() {
             } else if ($("#in-progress-blocker").is(":visible")) {
                 window.location.reload();
             }
+        },
+        error: function (error) {
+            createMessage("You have lost connection to the server.", "Warning");
         }
     });
 }
@@ -135,10 +138,10 @@ function createMessage(msg, type) {
     let messageTitle = $("<div></div>").addClass("message-box-title").text(type);
     let messageIcons = $("<div></div>").addClass("message-icons");
     let messageText = $("<div></div>").addClass("message-box-text").text(msg);
-    let messageInfoIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-info").addClass("message-info-icon").addClass("message-icon");
-    let messageErrorIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-exclamation").addClass("message-error-icon").addClass("message-icon");
-    let messageWarningIcon = $("<i></i>").addClass("fa-solid").addClass("fa-triangle-exclamation").addClass("message-warning-icon").addClass("message-icon");
-    let messageSuccessIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-check").addClass("message-success-icon").addClass("message-icon");
+    let messageInfoIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-info").addClass("message-Info-icon").addClass("message-icon");
+    let messageErrorIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-exclamation").addClass("message-Error-icon").addClass("message-icon");
+    let messageWarningIcon = $("<i></i>").addClass("fa-solid").addClass("fa-triangle-exclamation").addClass("message-Warning-icon").addClass("message-icon");
+    let messageSuccessIcon = $("<i></i>").addClass("fa-solid").addClass("fa-circle-check").addClass("message-Success-icon").addClass("message-icon");
     
     messageHeader.append(messageTitle);
     messageHeader.append(messageIcons);
@@ -151,6 +154,9 @@ function createMessage(msg, type) {
     messageBox.append(message);
     setTimeout(function () {
         message.fadeOut(1000);
+        setTimeout(function () {
+            message.remove();
+        }, 1000);
     }, 5000);
 }
 

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import webbrowser
+
 from fastapi import FastAPI, Depends, Request, Form, status, BackgroundTasks, File, UploadFile
 
 from starlette.responses import RedirectResponse
@@ -16,6 +18,10 @@ import modules
 models.Base.metadata.create_all(bind=engine)
 
 progress: dict = {"progress": 0, "total": 0}
+
+# start a browser window with the app
+webbrowser.open("http://localhost:8000", new=2)
+
 
 
 def get_db():

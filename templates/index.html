@@ -42,75 +42,85 @@
                 <span class="toolbar-label-text">Link</span>
                 <input type="text" name="link" class="url-input" autocomplete="off">
             </label>
-            <input type="button" value="+" class="add-button toolbar-button link-button add-btn"
-                   title="Add video/playlist to list" id="add">
-            <button type="button" class="download-all-button toolbar-button link-button download-directly-btn"
-                    title="Download video/playlist directly" id="download">
-                <i class="fa-solid fa-circle-down"></i>
-            </button>
-            <input type="checkbox" id="videoCheckbox" {% if onlyAudio == "1" %}
-                   checked
-            {% endif %}>
-            <label for="videoCheckbox" id="iconToggle">
-                <i class="fa-solid fa-video"></i>
-                <i class="fa-solid fa-video-slash"></i>
-            </label>
+            <div class="toolbar-button-wrapper">
+
+                <input type="button" value="+" class="add-button toolbar-button link-button add-btn"
+                       title="Add video/playlist to list" id="add">
+                <button type="button" class="download-all-button toolbar-button link-button download-directly-btn"
+                        title="Download video/playlist directly" id="download">
+                    <i class="fa-solid fa-circle-down"></i>
+                </button>
+                <input type="checkbox" id="videoCheckbox" {% if onlyAudio == "1" %}
+                       checked
+                {% endif %}>
+                <label for="videoCheckbox" id="iconToggle">
+                    <i class="fa-solid fa-video"></i>
+                    <i class="fa-solid fa-video-slash"></i>
+                </label>
+            </div>
 
         </div>
         <div class="toolbar-right">
-            <form title="Import files" method="post" action="/import" enctype="multipart/form-data">
-                <button type="button" id="import-btn" class="import-button toolbar-button">
-                    <i class="fa-solid fa-file-arrow-up"></i>
-                </button>
-                <input type="file" name="file" hidden="hidden" class="file-input">
-                <input type="checkbox" name="delete_before_import" hidden="hidden" class="file-input-checkbox">
-            </form>
-            &nbsp;&nbsp;&nbsp;
-            <div title="Export as TXT">
-                <button type="submit" class="export-button toolbar-button" file="txt">
-                    <i class="fa-solid fa-file-lines"></i>
-                </button>
-                {#                <input type="text" name="convert" value="txt" hidden="hidden" class="video-url">#}
+            <div class="toolbar-button-wrapper">
+
+                <form title="Import files" method="post" action="/import" enctype="multipart/form-data">
+                    <button type="button" id="import-btn" class="import-button toolbar-button">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                    </button>
+                    <input type="file" name="file" hidden="hidden" class="file-input">
+                    <input type="checkbox" name="delete_before_import" hidden="hidden" class="file-input-checkbox">
+                </form>
+
+                <div title="Export as TXT">
+                    <button type="submit" class="export-button toolbar-button" file="txt">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </button>
+                    {#                <input type="text" name="convert" value="txt" hidden="hidden" class="video-url">#}
+                </div>
+                <div title="Export as CSV">
+                    <button type="submit" class="export-button toolbar-button" file="csv">
+                        <i class="fa-solid fa-file-csv"></i>
+                    </button>
+                    {#                <input type="text" name="convert" value="csv" hidden="hidden" class="video-url">#}
+                </div>
+                <div title="Export as JSON">
+                    <button type="submit" class="export-button toolbar-button" file="json">
+                        <i class="fa-solid fa-file-code"></i>
+                    </button>
+                    {#                <input type="text" name="convert" value="json" hidden="hidden" class="video-url">#}
+                </div>
             </div>
-            <div title="Export as CSV">
-                <button type="submit" class="export-button toolbar-button" file="csv">
-                    <i class="fa-solid fa-file-csv"></i>
-                </button>
-                {#                <input type="text" name="convert" value="csv" hidden="hidden" class="video-url">#}
+            <div class="toolbar-button-wrapper">
+
+                <form action="/reverse_selection" method="post" title="Reverse your Selection">
+                    <button type="submit" class="download-selected-button toolbar-button">
+                        <i class="fa-regular fa-square-check"></i>
+                    </button>
+                </form>
+                <form action="/select_all" method="post" title="Select al videos">
+                    <button type="submit" class="download-selected-button toolbar-button">
+                        <i class="fa-solid fa-square-check"></i>
+                    </button>
+                </form>
             </div>
-            <div title="Export as JSON">
-                <button type="submit" class="export-button toolbar-button" file="json">
-                    <i class="fa-solid fa-file-code"></i>
-                </button>
-                {#                <input type="text" name="convert" value="json" hidden="hidden" class="video-url">#}
+            <div class="toolbar-button-wrapper">
+
+                <form action="/download_selected" method="post" title="Download all selected Videos">
+                    <button type="submit" class="download-selected-button toolbar-button">
+                        <i class="fa-regular fa-circle-down"></i>
+                    </button>
+                </form>
+                <form action="/download_all" method="post" title="Download all Videos">
+                    <button type="submit" class="download-all-button toolbar-button">
+                        <i class="fa-solid fa-circle-down"></i>
+                    </button>
+                </form>
+                <form action="/delete_all" method="post" title="Delete all Videos">
+                    <button type="submit" class="delete-all-button toolbar-button">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
             </div>
-            &nbsp;&nbsp;&nbsp;
-            <form action="/reverse_selection" method="post" title="Reverse your Selection">
-                <button type="submit" class="download-selected-button toolbar-button">
-                    <i class="fa-solid fa-object-group"></i>
-                </button>
-            </form>
-            <form action="/select_all" method="post" title="Select al videos">
-                <button type="submit" class="download-selected-button toolbar-button">
-                    <i class="fa-solid fa-object-ungroup"></i>
-                </button>
-            </form>
-            &nbsp;&nbsp;&nbsp;
-            <form action="/download_selected" method="post" title="Download all selected Videos">
-                <button type="submit" class="download-selected-button toolbar-button">
-                    <i class="fa-regular fa-circle-down"></i>
-                </button>
-            </form>
-            <form action="/download_all" method="post" title="Download all Videos">
-                <button type="submit" class="download-all-button toolbar-button">
-                    <i class="fa-solid fa-circle-down"></i>
-                </button>
-            </form>
-            <form action="/delete_all" method="post" title="Delete all Videos">
-                <button type="submit" class="delete-all-button toolbar-button">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </form>
         </div>
     </div>
     <div class="stats"><span><span class="stats-title">Selected</span> <span class="stats-value"
@@ -157,18 +167,18 @@
         {% endfor %}
     </div>
     <div id="messages">
-{#        <div class="message-box message-warning">#}
-{#            <div class="message-header">#}
-{#                <div class="message-box-title">Error</div>#}
-{#                <div class="message-icons">#}
-{#                    <i class="fa-solid fa-circle-info message-info-icon message-icon"></i>#}
-{#                    <i class="fa-solid fa-circle-exclamation message-error-icon message-icon"></i>#}
-{#                    <i class="fa-solid fa-triangle-exclamation message-warning-icon message-icon"></i>#}
-{#                    <i class="fa-solid fa-circle-check message-success-icon message-icon"></i>#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="message-box-text">This is an error message</div>#}
-{#        </div>#}
+        {#        <div class="message-box message-warning">#}
+        {#            <div class="message-header">#}
+        {#                <div class="message-box-title">Error</div>#}
+        {#                <div class="message-icons">#}
+        {#                    <i class="fa-solid fa-circle-info message-info-icon message-icon"></i>#}
+        {#                    <i class="fa-solid fa-circle-exclamation message-error-icon message-icon"></i>#}
+        {#                    <i class="fa-solid fa-triangle-exclamation message-warning-icon message-icon"></i>#}
+        {#                    <i class="fa-solid fa-circle-check message-success-icon message-icon"></i>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#            <div class="message-box-text">This is an error message</div>#}
+        {#        </div>#}
     </div>
 {% endblock %}
 

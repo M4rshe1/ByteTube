@@ -124,11 +124,17 @@ header {
     background: #0e1717;
 }
 
-.toolbar-left {
+.toolbar-left, .toolbar-button-wrapper {
     display: flex;
     align-items: center;
 }
 
+.toolbar-button-wrapper {
+    border: solid 2px #39535a;
+    border-radius: 5px;
+    padding: .2rem;
+    margin: 0 .5rem;
+}
 
 .toolbar-right {
     display: flex;
@@ -140,6 +146,23 @@ header {
 .toolbar-button:hover, #iconToggle:hover {
     cursor: pointer;
     opacity: .7;
+}
+
+@media (max-width: 950px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .toolbar-left {
+        margin: 0 .5rem .5rem .5rem;
+    }
+    .toolbar-right, .toolbar-left {
+        justify-content: space-between;
+        width: 100%;
+    }
+    .toolbar-right .toolbar-button-wrapper:last-child {
+        margin-right: 0;
+    }
 }
 
 .download-selected-button, .download-all-button, #iconToggle {
@@ -163,7 +186,7 @@ header {
 }
 
 .toolbar-button, #iconToggle {
-    margin-left: .5rem;
+    margin: 0 .3rem;
     border: none;
     outline: none;
     height: 30px;
@@ -308,6 +331,7 @@ header {
     display: inline;
     color: #ffc72e;
 }
+
 
 .message-Info .message-Info-icon {
     display: inline;
