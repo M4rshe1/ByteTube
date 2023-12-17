@@ -23,7 +23,6 @@ progress: dict = {"progress": 0, "total": 0}
 webbrowser.open("http://localhost:8000", new=2)
 
 
-
 def get_db():
     try:
         db = SessionLocal()
@@ -67,7 +66,7 @@ def root(request: Request, db: Session = Depends(get_db)):
 
 @app.post("/add")
 def add(request: Request, background_tasks: BackgroundTasks,
-        db: Session = Depends(get_db), links: str = Form(...)):    
+        db: Session = Depends(get_db), links: str = Form(...)):
     background_tasks.add_task(modules.get_video_data, links, progress, db)
     # data = modules.get_video_data(links, progress)
     # if data:

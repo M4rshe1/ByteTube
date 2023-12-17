@@ -36,15 +36,15 @@ $("#download").on("click", function () {
     sendRequest("/download", requestData, "POST")
 });
 
-$("#add").on("click", function () {
+$("#add").on("click", async function () {
     let btn = $(this);
-    let input = btn.parent().find(".url-input");
+    let input = btn.parent().parent().find(".url-input");
     let urlInput = input.val();
     input.val("");
 
     let requestData = {links: urlInput};
 
-    sendRequest("/add", requestData, "POST")
+    let res = await sendRequest("/add", requestData, "POST")
     window.location.reload();
 });
 
